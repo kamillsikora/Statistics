@@ -36,9 +36,6 @@ namespace PoC
         
         private void button4_Click(object sender, EventArgs e)
         {
-            /*
-             * Button Open - opens checked folder from the checkedLsitBox
-            */
             if(checkedListBox1.CheckedItems.Count == 1) 
             {
                 if (!checkedListBox1.CheckedItems[0].ToString().Contains('.'))
@@ -86,9 +83,6 @@ namespace PoC
             {
                 CreateNewTxt(textBox1.Text + Convert.ToString(item));
             }
-
-
-
         }
 
         private void button5_Click(object sender, EventArgs e)

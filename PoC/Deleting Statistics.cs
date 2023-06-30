@@ -33,5 +33,15 @@ namespace PoC
             this.DialogResult= DialogResult.Cancel;
             this.Close();
         }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Deleting_Statistics_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

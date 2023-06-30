@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using OfficeOpenXml;
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,119 +10,275 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using static OfficeOpenXml.ExcelErrorValue;
+using DocumentFormat.OpenXml.Wordprocessing;
 // Definicja struktury JSON
 
 namespace PoC
 {
     public partial class Statistics
     {
+        public Dictionary<string, int> summaryCat = new Dictionary<string, int>();
+        public Dictionary<string, Dictionary<string, int>> summaryNestedDict = new Dictionary<string, Dictionary<string, int>>();
+
         public void CountSattistics(string path, string filePath)
         {
             // Odczyt pliku JSON jako tekstu
             string data = File.ReadAllText(path);
 
             // Przetwarzanie zawartości pliku JSON
-            CountSattisticsFromJson(data, filePath, path);
+            CountSattisticsFromJson(data, path, filePath);
 
         }
-        public void CountSattisticsFromJson(string jsonContent, string filePath, string path)
+        public void CountSattisticsFromJson(string jsonContent, string path, string filePath)
         {
+            using (SpreadsheetDocument document = SpreadsheetDocument.Open(filePath, true))
+            {
+                AddDataToSheet(document, 1, Path.GetFileName(path), null);
+                AddDataToSheet(document, 3, Path.GetFileName(path), null);
+            }
             // Deserializacja JSON do obiektu
             json rootCategory = JsonConvert.DeserializeObject<json>(jsonContent);
-
-            // Przykład wyświetlenia nazw kategorii
-
-            using (StreamWriter writer = new StreamWriter(filePath, true))
-            {
-                CountCategories(rootCategory, writer, path);
-            }
+            // Przykład wyświetlenia nazw kategori
+            CountCategories(filePath, rootCategory);
         }
-        public static void CountCategories(json json, StreamWriter writer, string path)
+        public void CountCategories(string filePath, json json)
         {
-            writer.WriteLine(Path.GetFileName(Path.GetDirectoryName(path)));
-            writer.WriteLine("Nazwa kategorii\tLiczba");
-
-            Dictionary<string, int> categories_helper = new Dictionary<string, int>();
+            Dictionary<string, int> categories_helperAT = new Dictionary<string, int>();
+            Dictionary<string, int> categories_helperCV = new Dictionary<string, int>();
             string[] ids = new string[json.categories.Count];
+            List<string> tracks = new List<string>();
             int j = 0;
             foreach (var category in json.categories)
             {
                 string id = Convert.ToString(category.id);
                 ids[j] = id;
                 j++;
-                if (!categories_helper.ContainsKey(id))
+                if (!categories_helperAT.ContainsKey(id))
                 {
-                    categories_helper[Convert.ToString(id)] = 0;
+                    categories_helperAT[Convert.ToString(id)] = 0;
+                    categories_helperCV[Convert.ToString(id)] = 0;
                 }
             }
             foreach (var annotation in json.annotations)
             {
-                string id = Convert.ToString(annotation.category_id);
-                categories_helper[id]++;
-
-            }
-            Dictionary<string, int> categories = ChangeKeys(json, categories_helper);
-            for (int i = 0; i < categories.Count; i++)
-            {
-
-                writer.WriteLine($"{categories.Keys.ElementAt(i)}\t{categories.Values.ElementAt(i)}");
-
-                CountAttributesCat(json, ids[i], writer);
-
-            }
-        }
-
-        public static void CountAttributesCat(json json, string cat, StreamWriter writer)
-        {
-            Dictionary<string, object> dictionary = new Dictionary<string, object>();
-            Dictionary<string, Dictionary<string, int>> nestedDictionary = new Dictionary<string, Dictionary<string, int>>();
-            if (json.categories != null)
-            {
-                foreach (var annotation in json.annotations)
+                string track = "";
+                if (annotation.attributes.ContainsKey("occluded") && annotation.attributes["occluded"].ToString() == "False")
                 {
-                    if (annotation.category_id.ToString() == cat)
+                    string id = Convert.ToString(annotation.category_id);
+                    categories_helperAT[id]++;
+                    if (annotation.attributes.ContainsKey("track_id"))
                     {
-                        foreach (var kvp in annotation.attributes)
+                        track = annotation.attributes["track_id"].ToString();
+                        if (!tracks.Contains(track) && track != "")
                         {
-                            dictionary[kvp.Key] = kvp.Value;
-
+                            tracks.Add(track);
+                            categories_helperCV[id]++;
                         }
-                        CreateNestedDictionary(nestedDictionary, dictionary);
-                        dictionary.Clear();
 
-                    }
-                }
-                WriteAttributesToTxt(nestedDictionary, writer);
-
-            }
-        }
-
-        public static void WriteAttributesToTxt(Dictionary<string, Dictionary<string, int>> nestedDictionary, StreamWriter writer)
-        {
-            foreach (KeyValuePair<string, Dictionary<string, int>> kvp in nestedDictionary)
-            {
-                string attribute = kvp.Key;
-                Dictionary<string, int> valueCounts = kvp.Value;
-                writer.Write($"\t{attribute}\t");
-                int i = 0;
-                foreach (KeyValuePair<string, int> valueKvp in valueCounts)
-                {
-                    i++;
-                    if (i > 1)
-                    {
-                        writer.WriteLine($"\t\t\t\t{valueKvp.Key}\t{valueKvp.Value}");
                     }
                     else
                     {
-                        writer.WriteLine($"\t{valueKvp.Key}\t{valueKvp.Value}");
+                        categories_helperCV[id]++;
                     }
                 }
-                
+
             }
-            writer.WriteLine();
+            Dictionary<string, int> categoriesAT = ChangeKeys(json, categories_helperAT);
+            Dictionary<string, int> categoriesCV = ChangeKeys(json, categories_helperCV);
+            SummaryCat(categoriesAT);
+            for (int i = 0; i < categoriesAT.Count; i++)
+            {
+
+                using (SpreadsheetDocument document = SpreadsheetDocument.Open(filePath, true))
+                {
+                    AddDataToSheet(document, 1, categoriesAT.Keys.ElementAt(i), categoriesAT.Values.ElementAt(i).ToString());
+                    AddDataToSheet(document, 3, categoriesCV.Keys.ElementAt(i), categoriesCV.Values.ElementAt(i).ToString());
+                }
+                CountAttributesCat(filePath, 1, json, ids[i]);
+                CountAttributesCat(filePath, 3, json, ids[i]);
+
+            }
         }
-        public static Dictionary<string, int> ChangeKeys(json json, Dictionary<string, int> old_categories)
+        public void SummaryCat(Dictionary<string, int> categories)
+        {
+            foreach (var category in categories)
+            {
+                if (!summaryCat.ContainsKey(category.Key))
+                {
+                    summaryCat[category.Key] = category.Value;
+                }
+                else
+                {
+                    summaryCat[category.Key] += category.Value;
+                }
+            }
+        }
+
+        public void CountAttributesCat(string filePath, int team, json json, string cat)
+        {
+            Dictionary<string, object> dictionary = new Dictionary<string, object>();
+            Dictionary<string, Dictionary<string, int>> nestedDictionary = new Dictionary<string, Dictionary<string, int>>();
+            dictionary.Clear();
+            nestedDictionary.Clear();
+            List<string> tracks = new List<string>();
+            if (team == 1)
+            {
+                if (json.categories != null)
+                {
+                    foreach (var annotation in json.annotations)
+                    {
+                        if (annotation.category_id.ToString() == cat)
+                        {
+                            foreach (var kvp in annotation.attributes)
+                            {
+                                if ((annotation.attributes.ContainsKey("occluded") && annotation.attributes["occluded"].ToString() == "False") || kvp.Key == "occluded")
+                                {
+                                    dictionary[kvp.Key] = kvp.Value;
+                                }
+
+                            }
+                            CreateNestedDictionary(nestedDictionary, dictionary);
+                            dictionary.Clear();
+
+                        }
+
+                    }
+                    CopyNestedDictionary(nestedDictionary);
+                    WriteAttributesToTxt(filePath, team, nestedDictionary);
+
+                }
+            }
+            else
+            {
+                if (json.categories != null)
+                {
+                    string track = "";
+                    foreach (var annotation in json.annotations)
+                    {
+                        if (annotation.attributes.ContainsKey("track_id"))
+                        {
+                            track = annotation.attributes["track_id"].ToString();
+                            if (!tracks.Contains(track) && track != "")
+                            {
+
+                                if (annotation.category_id.ToString() == cat)
+                                {
+                                    foreach (var kvp in annotation.attributes)
+                                    {
+                                        if ((annotation.attributes.ContainsKey("occluded") && annotation.attributes["occluded"].ToString() == "False") || kvp.Key == "occluded")
+                                        {
+                                            tracks.Add(track);
+                                            dictionary[kvp.Key] = kvp.Value;
+                                        }
+
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (annotation.category_id.ToString() == cat)
+                            {
+                                foreach (var kvp in annotation.attributes)
+                                {
+                                    if ((annotation.attributes.ContainsKey("occluded") && annotation.attributes["occluded"].ToString() == "False") || kvp.Key == "occluded")
+                                    {
+                                        tracks.Add(track);
+                                        dictionary[kvp.Key] = kvp.Value;
+                                    }
+
+                                }
+                            }
+                        }
+                        CreateNestedDictionary(nestedDictionary, dictionary);
+                        dictionary.Clear();
+                    }
+                    //CopyNestedDictionary(nestedDictionary);
+                    WriteAttributesToTxt(filePath, team, nestedDictionary);
+                }
+            }
+        }
+
+        public void CopyNestedDictionary(Dictionary<string, Dictionary<string, int>> sourceDictionary)
+        {
+            foreach (KeyValuePair<string, Dictionary<string, int>> outerKvp in sourceDictionary)
+            {
+                string attribute = outerKvp.Key;
+                Dictionary<string, int> innerDictionary = outerKvp.Value;
+
+                if (!summaryNestedDict.ContainsKey(attribute))
+                {
+                    summaryNestedDict[attribute] = new Dictionary<string, int>(innerDictionary);
+                }
+                else
+                {
+                    Dictionary<string, int> targetInnerDictionary = summaryNestedDict[attribute];
+
+                    foreach (KeyValuePair<string, int> innerKvp in innerDictionary)
+                    {
+                        string value = innerKvp.Key;
+                        int count = innerKvp.Value;
+
+                        if (!targetInnerDictionary.ContainsKey(value))
+                        {
+                            targetInnerDictionary[value] = count;
+                        }
+                        else
+                        {
+                            targetInnerDictionary[value] += count;
+                        }
+                    }
+                    //summaryNestedDict[attribute] = targetInnerDictionary;
+                }
+            }
+        }
+
+        public static void WriteAttributesToTxt(string filePath, int sheetIndex, Dictionary<string, Dictionary<string, int>> nestedDictionary)
+        {
+            if (sheetIndex == 1 || sheetIndex == 2)
+            {
+
+                IncreaseColumn(ref colAT);
+                foreach (KeyValuePair<string, Dictionary<string, int>> kvp in nestedDictionary)
+                {
+                    using (SpreadsheetDocument document = SpreadsheetDocument.Open(filePath, true))
+                    {
+                        string attribute = kvp.Key;
+                        Dictionary<string, int> valueCounts = kvp.Value;
+                        AddDataToSheet(document, sheetIndex, attribute, null);
+                        foreach (KeyValuePair<string, int> valueKvp in valueCounts)
+                        {
+                            IncreaseColumn(ref colAT);
+                            AddDataToSheet(document, sheetIndex, valueKvp.Key, valueKvp.Value.ToString());
+                            DecreaseColumn(ref colAT);
+                        }
+                    }
+                }
+                DecreaseColumn(ref colAT);
+            }
+            if (sheetIndex == 3 || sheetIndex == 4)
+            {
+
+                IncreaseColumn(ref colCV);
+                foreach (KeyValuePair<string, Dictionary<string, int>> kvp in nestedDictionary)
+                {
+                    using (SpreadsheetDocument document = SpreadsheetDocument.Open(filePath, true))
+                    {
+                        string attribute = kvp.Key;
+                        Dictionary<string, int> valueCounts = kvp.Value;
+                        AddDataToSheet(document, sheetIndex, attribute, null);
+                        foreach (KeyValuePair<string, int> valueKvp in valueCounts)
+                        {
+                            IncreaseColumn(ref colCV);
+                            AddDataToSheet(document, sheetIndex, valueKvp.Key, valueKvp.Value.ToString());
+                            DecreaseColumn(ref colCV);
+                        }
+                    }
+                }
+                DecreaseColumn(ref colCV);
+            }
+        }
+            public static Dictionary<string, int> ChangeKeys(json json, Dictionary<string, int> old_categories)
         {
             Dictionary<string, int> new_categories = new Dictionary<string, int>();
             foreach (var category in json.categories)
@@ -159,4 +317,3 @@ namespace PoC
         }
     }
 }
-

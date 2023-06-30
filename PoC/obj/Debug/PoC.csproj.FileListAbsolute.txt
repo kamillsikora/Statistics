@@ -41,12 +41,8 @@ C:\Users\Lenovo\Desktop\PoC\PoC\obj\Debug\PoC.csproj.CopyComplete
 C:\Users\kasikora\Desktop\PoC\PoC\bin\Debug\PoC.exe.config
 C:\Users\kasikora\Desktop\PoC\PoC\bin\Debug\PoC.exe
 C:\Users\kasikora\Desktop\PoC\PoC\bin\Debug\PoC.pdb
-C:\Users\kasikora\Desktop\PoC\PoC\bin\Debug\EPPlus.dll
-C:\Users\kasikora\Desktop\PoC\PoC\bin\Debug\EPPlus.Interfaces.dll
-C:\Users\kasikora\Desktop\PoC\PoC\bin\Debug\EPPlus.System.Drawing.dll
 C:\Users\kasikora\Desktop\PoC\PoC\bin\Debug\Microsoft.IO.RecyclableMemoryStream.dll
 C:\Users\kasikora\Desktop\PoC\PoC\bin\Debug\Newtonsoft.Json.dll
-C:\Users\kasikora\Desktop\PoC\PoC\bin\Debug\EPPlus.xml
 C:\Users\kasikora\Desktop\PoC\PoC\bin\Debug\Microsoft.IO.RecyclableMemoryStream.xml
 C:\Users\kasikora\Desktop\PoC\PoC\bin\Debug\Newtonsoft.Json.xml
 C:\Users\kasikora\Desktop\PoC\PoC\obj\Debug\PoC.csproj.AssemblyReference.cache
@@ -63,3 +59,5 @@ C:\Users\kasikora\Desktop\PoC\PoC\bin\Debug\PoC.exe.manifest
 C:\Users\kasikora\Desktop\PoC\PoC\bin\Debug\PoC.application
 C:\Users\kasikora\Desktop\PoC\PoC\obj\Debug\PoC.exe.manifest
 C:\Users\kasikora\Desktop\PoC\PoC\obj\Debug\PoC.application
+C:\Users\kasikora\Desktop\PoC\PoC\bin\Debug\DocumentFormat.OpenXml.dll
+C:\Users\kasikora\Desktop\PoC\PoC\bin\Debug\DocumentFormat.OpenXml.xml

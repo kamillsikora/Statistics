@@ -74,6 +74,7 @@
             this.label2.Size = new System.Drawing.Size(176, 18);
             this.label2.TabIndex = 3;
             this.label2.Text = "do you want to replace it?";
+            this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
             // Deleting_Statistics
             // 
@@ -86,6 +87,7 @@
             this.Controls.Add(this.button1);
             this.Name = "Deleting_Statistics";
             this.Text = "Deleting_Statistics";
+            this.Load += new System.EventHandler(this.Deleting_Statistics_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
