@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Design.Serialization;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -93,6 +94,11 @@ namespace PoC
         private void button3_Click(object sender, EventArgs e)
         {
             Reload(main_path);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Process.Start(@"O:\Projects\Statistics Excels");
         }
     }
 }

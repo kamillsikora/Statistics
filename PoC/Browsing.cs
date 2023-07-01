@@ -54,60 +54,61 @@ namespace PoC
 
         public void CreateNewTxt(string path)
         {
-            string filePath = Path.Combine(@"O:\Projects\Statistics Txt", Path.GetFileName(path) + " Statistics.xlsx");
-            if (File.Exists(filePath))
+            string filePath = Path.Combine(@"O:\Projects\Statistics Excels", Path.GetFileName(path) + " Statistics.xlsx");
+            try
             {
-                Deleting_Statistics deleting_Statistics = new Deleting_Statistics();
-                DialogResult result = deleting_Statistics.ShowDialog();
 
-                if (result == DialogResult.OK)
+                if (File.Exists(filePath))
                 {
-                    File.Delete(filePath);
-                    CreateExcelFile(filePath);
+                    Deleting_Statistics deleting_Statistics = new Deleting_Statistics();
+                    DialogResult result = deleting_Statistics.ShowDialog();
+
+                    if (result == DialogResult.OK)
+                    {
+                        File.Delete(filePath);
+                        CreateExcelFile(filePath);
+                    }
+                    else
+                    {
+                        return;
+                    }
                 }
                 else
                 {
-                    return;
+                    CreateExcelFile(filePath);
                 }
             }
-            else
+            catch (Exception ex)
             {
-                CreateExcelFile(filePath);
+                MessageBox.Show(ex + "\n\nClose it before creating new Statistics.");
+                return;
             }
             rowAT = 0;
             colAT = "A";
             rowCV = 0;
             colCV = "A";
-            summaryCat.Clear();
-            summaryNestedDict.Clear();
+            summaryCatAT.Clear();
+            summaryCatCV.Clear();
+            Loading_Window loading_Window = new Loading_Window();
+            loading_Window.loading_path = path;
+            loading_Window.InitializeTextBox();
+            loading_Window.Show();
             ProcessFolder(path, filePath);
+            loading_Window.Close();
             rowAT = 0;
             colAT = "A";
+            rowCV = 0;
+            colCV = "A";
             int i = 0;
-            //int j = 0;
-            for (i = 0; i < summaryCat.Count; i++)
+            for (i = 0; i < summaryCatAT.Count; i++)
             {
                 using (SpreadsheetDocument document = SpreadsheetDocument.Open(filePath, true))
                 {
-                    AddDataToSheet(document, 2, summaryCat.Keys.ElementAt(i), summaryCat.Values.ElementAt(i).ToString());
-                    /*if(summaryCat.Values.ElementAt(i) != 0)
-                    {
-                        string attribute = summaryNestedDict.Keys.ElementAt(j);
-                        Dictionary<string, int> valueCounts = summaryNestedDict.Values.ElementAt(j);
-                        AddDataToSheet(document, 2, attribute, null);
-                        foreach (KeyValuePair<string, int> valueKvp in valueCounts)
-                        {
-                            IncreaseColumn(ref col);
-                            AddDataToSheet(document, 2, valueKvp.Key, valueKvp.Value.ToString());
-                            DecreaseColumn(ref col);
-                        }
-                        j++;
-                    }
-                    */
-        }
+                    AddDataToSheet(document, 2, summaryCatAT.Keys.ElementAt(i), summaryCatAT.Values.ElementAt(i).ToString());
+                    AddDataToSheet(document, 4, summaryCatCV.Keys.ElementAt(i), summaryCatCV.Values.ElementAt(i).ToString());
+                }
 
-    }
-            //WriteAttributesToTxt(filePath, 2, summaryNestedDict);
+            }
             MessageBox.Show("Done");
         }
 
@@ -152,13 +153,6 @@ namespace PoC
                 }
             }
         }
-
-        public void DeserializeJson(string parh)
-        {
-
-        }
-
-
         private void Statistics_Load(object sender, EventArgs e)
         {
 

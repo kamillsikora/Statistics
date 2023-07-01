@@ -17,9 +17,8 @@ namespace PoC
 {
     public partial class Statistics
     {
-        public Dictionary<string, int> summaryCat = new Dictionary<string, int>();
-        public Dictionary<string, Dictionary<string, int>> summaryNestedDict = new Dictionary<string, Dictionary<string, int>>();
-
+        public Dictionary<string, int> summaryCatAT = new Dictionary<string, int>();
+        public Dictionary<string, int> summaryCatCV = new Dictionary<string, int>();
         public void CountSattistics(string path, string filePath)
         {
             // Odczyt pliku JSON jako tekstu
@@ -85,7 +84,8 @@ namespace PoC
             }
             Dictionary<string, int> categoriesAT = ChangeKeys(json, categories_helperAT);
             Dictionary<string, int> categoriesCV = ChangeKeys(json, categories_helperCV);
-            SummaryCat(categoriesAT);
+            summaryCatAT = SummaryCat(summaryCatAT,categoriesAT);
+            summaryCatCV = SummaryCat(summaryCatCV, categoriesCV);
             for (int i = 0; i < categoriesAT.Count; i++)
             {
 
@@ -99,7 +99,7 @@ namespace PoC
 
             }
         }
-        public void SummaryCat(Dictionary<string, int> categories)
+        public Dictionary<string, int> SummaryCat(Dictionary<string, int> summaryCat, Dictionary<string, int> categories)
         {
             foreach (var category in categories)
             {
@@ -112,6 +112,7 @@ namespace PoC
                     summaryCat[category.Key] += category.Value;
                 }
             }
+            return summaryCat;
         }
 
         public void CountAttributesCat(string filePath, int team, json json, string cat)
@@ -143,7 +144,6 @@ namespace PoC
                         }
 
                     }
-                    CopyNestedDictionary(nestedDictionary);
                     WriteAttributesToTxt(filePath, team, nestedDictionary);
 
                 }
@@ -193,42 +193,7 @@ namespace PoC
                         CreateNestedDictionary(nestedDictionary, dictionary);
                         dictionary.Clear();
                     }
-                    //CopyNestedDictionary(nestedDictionary);
                     WriteAttributesToTxt(filePath, team, nestedDictionary);
-                }
-            }
-        }
-
-        public void CopyNestedDictionary(Dictionary<string, Dictionary<string, int>> sourceDictionary)
-        {
-            foreach (KeyValuePair<string, Dictionary<string, int>> outerKvp in sourceDictionary)
-            {
-                string attribute = outerKvp.Key;
-                Dictionary<string, int> innerDictionary = outerKvp.Value;
-
-                if (!summaryNestedDict.ContainsKey(attribute))
-                {
-                    summaryNestedDict[attribute] = new Dictionary<string, int>(innerDictionary);
-                }
-                else
-                {
-                    Dictionary<string, int> targetInnerDictionary = summaryNestedDict[attribute];
-
-                    foreach (KeyValuePair<string, int> innerKvp in innerDictionary)
-                    {
-                        string value = innerKvp.Key;
-                        int count = innerKvp.Value;
-
-                        if (!targetInnerDictionary.ContainsKey(value))
-                        {
-                            targetInnerDictionary[value] = count;
-                        }
-                        else
-                        {
-                            targetInnerDictionary[value] += count;
-                        }
-                    }
-                    //summaryNestedDict[attribute] = targetInnerDictionary;
                 }
             }
         }
