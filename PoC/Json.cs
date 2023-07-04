@@ -11,7 +11,6 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using DocumentFormat.OpenXml.Wordprocessing;
-// Definicja struktury JSON
 
 namespace PoC
 {
@@ -19,16 +18,27 @@ namespace PoC
     {
         public Dictionary<string, int> summaryCatAT = new Dictionary<string, int>();
         public Dictionary<string, int> summaryCatCV = new Dictionary<string, int>();
-        public void CountSattistics(string path, string filePath)
+
+        /// <summary>
+        /// Initializes the process of counting Statistics
+        /// </summary>
+        /// <param name="path">path of the json file</param>
+        /// <param name="filePath">path of the creating file</param>
+        public void CountSatistics(string path, string filePath)
         {
-            // Odczyt pliku JSON jako tekstu
             string data = File.ReadAllText(path);
 
-            // Przetwarzanie zawartości pliku JSON
-            CountSattisticsFromJson(data, path, filePath);
+            CountSatisticsFromJson(data, path, filePath);
 
         }
-        public void CountSattisticsFromJson(string jsonContent, string path, string filePath)
+
+        /// <summary>
+        /// Initializes the process of counting Statistics from json
+        /// </summary>
+        /// <param name="jsonContent">data from json file</param>
+        /// <param name="path">path of the json file</param>
+        /// <param name="filePath">path of the creating file</param>
+        public void CountSatisticsFromJson(string jsonContent, string path, string filePath)
         {
             using (SpreadsheetDocument document = SpreadsheetDocument.Open(filePath, true))
             {
@@ -40,6 +50,12 @@ namespace PoC
             // Przykład wyświetlenia nazw kategori
             CountCategories(filePath, rootCategory);
         }
+
+        /// <summary>
+        /// Makes a dictionary with names of categories and numbers of occurrences
+        /// </summary>
+        /// <param name="filePath">path of the creating file</param>
+        /// <param name="json">deserialized data from json</param>
         public void CountCategories(string filePath, json json)
         {
             Dictionary<string, int> categories_helperAT = new Dictionary<string, int>();
@@ -99,6 +115,13 @@ namespace PoC
 
             }
         }
+
+        /// <summary>
+        /// Counts the summarized categories from all jsons in the main directory
+        /// </summary>
+        /// <param name="summaryCat">the dictionary of summarized categories</param>
+        /// <param name="categories">counted categories from one json</param>
+        /// <returns></returns>
         public Dictionary<string, int> SummaryCat(Dictionary<string, int> summaryCat, Dictionary<string, int> categories)
         {
             foreach (var category in categories)
@@ -115,6 +138,13 @@ namespace PoC
             return summaryCat;
         }
 
+        /// <summary>
+        /// Makes a dictiornary from attributes founded in one annotation
+        /// </summary>
+        /// <param name="filePath">path of the creating file</param>
+        /// <param name="team">index of the team for whom the Statistics are counted</param>
+        /// <param name="json">deserialized data from json</param>
+        /// <param name="cat">name of the category from which the attributes are counted</param>
         public void CountAttributesCat(string filePath, int team, json json, string cat)
         {
             Dictionary<string, object> dictionary = new Dictionary<string, object>();
@@ -144,7 +174,7 @@ namespace PoC
                         }
 
                     }
-                    WriteAttributesToTxt(filePath, team, nestedDictionary);
+                    WriteAttributesToExcel(filePath, team, nestedDictionary);
 
                 }
             }
@@ -193,12 +223,18 @@ namespace PoC
                         CreateNestedDictionary(nestedDictionary, dictionary);
                         dictionary.Clear();
                     }
-                    WriteAttributesToTxt(filePath, team, nestedDictionary);
+                    WriteAttributesToExcel(filePath, team, nestedDictionary);
                 }
             }
         }
 
-        public static void WriteAttributesToTxt(string filePath, int sheetIndex, Dictionary<string, Dictionary<string, int>> nestedDictionary)
+        /// <summary>
+        /// Adds counted attributes to created excxel
+        /// </summary>
+        /// <param name="filePath">path of the creating file</param>
+        /// <param name="sheetIndex">Index of the sheet in which data are added</param>
+        /// <param name="nestedDictionary">a summarized dictionary</param>
+        public static void WriteAttributesToExcel(string filePath, int sheetIndex, Dictionary<string, Dictionary<string, int>> nestedDictionary)
         {
             if (sheetIndex == 1 || sheetIndex == 2)
             {
@@ -243,7 +279,14 @@ namespace PoC
                 DecreaseColumn(ref colCV);
             }
         }
-            public static Dictionary<string, int> ChangeKeys(json json, Dictionary<string, int> old_categories)
+
+        /// <summary>
+        /// Changes keys in dictionary, form numbers (indexes) to names
+        /// </summary>
+        /// <param name="json">deserialized data from json</param>
+        /// <param name="old_categories">a dictionary before making changes</param>
+        /// <returns></returns>
+        public static Dictionary<string, int> ChangeKeys(json json, Dictionary<string, int> old_categories)
         {
             Dictionary<string, int> new_categories = new Dictionary<string, int>();
             foreach (var category in json.categories)
@@ -258,6 +301,11 @@ namespace PoC
             return new_categories;
         }
 
+        /// <summary>
+        /// Makes nested dictionary for attributes found in json
+        /// </summary>
+        /// <param name="nestedDictionary">a summarized dictionary</param>
+        /// <param name="dict">a dictionary from which attributes are counted</param>
         public static void CreateNestedDictionary(Dictionary<string, Dictionary<string, int>> nestedDictionary, Dictionary<string, object> dict)
         {
 

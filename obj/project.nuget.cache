@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "fGzFxrxid/hfkPylkPdIv+z5Rw2awdSiITPZW5LRYo/Iyc+LLc+XDQd7qBY6P7UUesWHX7P13v9s1OymdXt9qQ==",
+  "dgSpecHash": "HNmCfq2PFpt1J1ZnijT5l7Kg3NcrhuLEZzlXbmkY04G0EYpro+qShUHt5x7tAbe83i1mudbvDYU4QQmUhtA3Rw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\kasikora\\Desktop\\PoC\\PoC.csproj",
+  "projectFilePath": "C:\\Users\\kasikora\\Desktop\\Git_Repositories\\Statistics\\PoC.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

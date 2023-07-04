@@ -10,6 +10,9 @@ using System.Windows.Forms;
 
 namespace PoC
 {
+    /// <summary>
+    /// Form class <c>Deleting_Statistics</c> - window with request of deleting existing file or stopping process
+    /// </summary>
     public partial class Deleting_Statistics : Form
     {
         public Deleting_Statistics()
@@ -17,31 +20,22 @@ namespace PoC
             InitializeComponent();
         }
 
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
+        /// <summary>
+        /// Yes button
+        /// </summary>
         private void button1_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
 
+        /// <summary>
+        /// No button
+        /// </summary>
         private void button2_Click(object sender, EventArgs e)
         {
             this.DialogResult= DialogResult.Cancel;
             this.Close();
-        }
-
-        private void label2_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void Deleting_Statistics_Load(object sender, EventArgs e)
-        {
-
         }
     }
 }

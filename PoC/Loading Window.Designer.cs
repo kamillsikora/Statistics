@@ -42,6 +42,7 @@
             this.label1.Size = new System.Drawing.Size(144, 31);
             this.label1.TabIndex = 0;
             this.label1.Text = "Loading...";
+            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // label2
             // 
@@ -52,6 +53,7 @@
             this.label2.Size = new System.Drawing.Size(145, 16);
             this.label2.TabIndex = 1;
             this.label2.Text = "Creating Statistics from:";
+            this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
             // textBox1
             // 

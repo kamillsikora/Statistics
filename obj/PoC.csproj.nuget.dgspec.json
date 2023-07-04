@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\kasikora\\Desktop\\PoC\\PoC.csproj": {}
+    "C:\\Users\\kasikora\\Desktop\\Git_Repositories\\Statistics\\PoC.csproj": {}
   },
   "projects": {
-    "C:\\Users\\kasikora\\Desktop\\PoC\\PoC.csproj": {
+    "C:\\Users\\kasikora\\Desktop\\Git_Repositories\\Statistics\\PoC.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\kasikora\\Desktop\\PoC\\PoC.csproj",
+        "projectUniqueName": "C:\\Users\\kasikora\\Desktop\\Git_Repositories\\Statistics\\PoC.csproj",
         "projectName": "PoC",
-        "projectPath": "C:\\Users\\kasikora\\Desktop\\PoC\\PoC.csproj",
+        "projectPath": "C:\\Users\\kasikora\\Desktop\\Git_Repositories\\Statistics\\PoC.csproj",
         "packagesPath": "C:\\Users\\kasikora\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\kasikora\\Desktop\\PoC\\obj\\",
+        "outputPath": "C:\\Users\\kasikora\\Desktop\\Git_Repositories\\Statistics\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

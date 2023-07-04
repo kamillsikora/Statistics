@@ -11,17 +11,21 @@ using System.Windows.Forms;
 namespace PoC
 {
     public partial class Statistics
-    {
+    {   
         public static int rowAT = 0;
         public static string colAT = "A";
         public static int rowCV = 0;
         public static string colCV = "A";
         public static int rowTemp = 0;
         public static string colTemp = "A";
+
+        /// <summary>
+        /// Creates Excel file
+        /// </summary>
+        /// <param name="filePath">path of the creating file</param>
         static void CreateExcelFile(string filePath)
         {
-
-            // Tworzenie nowego pliku Excel
+            // Creating a new Excel file
             using (SpreadsheetDocument document = SpreadsheetDocument.Create(filePath, SpreadsheetDocumentType.Workbook))
             {
                 WorkbookPart workbookPart = document.AddWorkbookPart();
@@ -29,7 +33,7 @@ namespace PoC
 
                 Sheets sheets = workbookPart.Workbook.AppendChild(new Sheets());
 
-                // Dodawanie arkuszy do pliku
+                // Adding sheets to the file
 
                 WorksheetPart worksheetPart1 = workbookPart.AddNewPart<WorksheetPart>();
                 worksheetPart1.Worksheet = new Worksheet(new SheetData());
@@ -58,10 +62,15 @@ namespace PoC
                 workbookPart.Workbook.Save();
                 document.Dispose();
             }
-
-            MessageBox.Show("Plik Excel został utworzony: " + filePath);
         }
 
+        /// <summary>
+        /// Adding data to the chosen sheet
+        /// </summary>
+        /// <param name="document">Created Excel for statistics</param>
+        /// <param name="sheetIndex">Number of the sheet into which the data are going to be added</param>
+        /// <param name="category_name">first parameter</param>
+        /// <param name="category_number">second parameter</param>
         static void AddDataToSheet(SpreadsheetDocument document, int sheetIndex, string category_name, string category_number)
         {
             WorkbookPart workbookPart = document.WorkbookPart;
@@ -72,7 +81,7 @@ namespace PoC
                 if(sheetIndex == 1 || sheetIndex == 2)
                 {
                     SheetData sheetData = worksheetPart.Worksheet.GetFirstChild<SheetData>();
-                    IncreaseFunctionValue(ref rowAT);
+                    IncreaseRow(ref rowAT);
 
                     Row dataRow = new Row();
                     dataRow.Append(CreateCell(colAT, rowAT, category_name, CellValues.String));
@@ -87,7 +96,7 @@ namespace PoC
                 if (sheetIndex == 3 || sheetIndex == 4)
                 {
                     SheetData sheetData = worksheetPart.Worksheet.GetFirstChild<SheetData>();
-                    IncreaseFunctionValue(ref rowCV);
+                    IncreaseRow(ref rowCV);
 
                     Row dataRow = new Row();
                     dataRow.Append(CreateCell(colCV, rowCV, category_name, CellValues.String));
@@ -101,11 +110,19 @@ namespace PoC
             }
         }
 
-        static void IncreaseFunctionValue(ref int value)
+        /// <summary>
+        /// Increases rows in Excel
+        /// </summary>
+        /// <param name="rows">Number of the current row</param>
+        static void IncreaseRow(ref int rows)
         {
-            value++;
+            rows++;
         }
 
+        /// <summary>
+        /// Increases columns in Excel
+        /// </summary>
+        /// <param name="column">Number of the current column</param>
         static void IncreaseColumn(ref string column)
         {
             int length = column.Length;
@@ -121,6 +138,10 @@ namespace PoC
             }
         }
 
+        /// <summary>
+        /// Decreases columns in Excel
+        /// </summary>
+        /// <param name="column">Number of the current column</param>
         static void DecreaseColumn(ref string column)
         {
             int length = column.Length;
@@ -136,9 +157,17 @@ namespace PoC
             }
         }
 
-        static Cell CreateCell(string column, int rowIndex, string cellValue, CellValues dataType)
+        /// <summary>
+        /// Adds data to the chosen cell in Excel
+        /// </summary>
+        /// <param name="column">Current column</param>
+        /// <param name="rows">Current row</param>
+        /// <param name="cellValue">Value that is added</param>
+        /// <param name="dataType">Type of the value that is added</param>
+        /// <returns></returns>
+        static Cell CreateCell(string column, int rows, string cellValue, CellValues dataType)
         {
-            string cellReference = column + rowIndex;
+            string cellReference = column + rows;
             Cell cell = new Cell()
             {
                 CellReference = cellReference,

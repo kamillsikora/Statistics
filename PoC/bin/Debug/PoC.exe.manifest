@@ -78,14 +78,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="PoC.exe" size="32216">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="PoC.exe" size="31704">
       <assemblyIdentity name="PoC" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>8MnoAibxympqBRQGiafhBwRVSnSWrZiOGZgUEylC47U=</dsig:DigestValue>
+        <dsig:DigestValue>ZFu3qHkst78Rjaf4HcGdM8Ia7ZRy8gB9Lrjq1IPZSxU=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

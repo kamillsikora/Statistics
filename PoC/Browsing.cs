@@ -20,15 +20,11 @@ namespace PoC
     {
         Stack<string> history = new Stack<string>();
         public string main_path = @"O:\Projects";
-        public void start()
-        {
-            if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
-            {
-                main_path = folderBrowserDialog1.SelectedPath;
-                Reload(folderBrowserDialog1.SelectedPath);
-            }
-        }
 
+        /// <summary>
+        /// Fills checkedListBox with directories and files from a chosen path and adds the path to history 
+        /// </summary>
+        /// <param name="root_path">Path that was chosen in folderBrowserDialog or main_path</param>
         public void Reload(string root_path)
         {
             history.Push(root_path);
@@ -45,16 +41,22 @@ namespace PoC
             }
             InitializeHeadline(root_path);
         }
-
+        /// <summary>
+        /// Puts path of the main directory into headline textbox 
+        /// </summary>
+        /// <param name="path">path of the main directory</param>
         public void InitializeHeadline(string path)
         {
-            // Puts path of the main directory into headline textbox  
             textBox1.Text = path + "\\";
         }
 
-        public void CreateNewTxt(string path)
+        /// <summary>
+        /// Creates Statistics from folders checked in a checkedListBox, checks if the folder already exists and shows loading window
+        /// </summary>
+        /// <param name="path">path of the directory from which Statistics are going to be made</param>
+        public void CreateNewStats(string path)
         {
-            string filePath = Path.Combine(@"O:\Projects\Statistics Excels", Path.GetFileName(path) + " Statistics.xlsx");
+            string filePath = Path.Combine(@"O:\Projects\Statistics_Excels", Path.GetFileName(path) + "_Statistics.xlsx");
             try
             {
 
@@ -93,14 +95,14 @@ namespace PoC
             loading_Window.loading_path = path;
             loading_Window.InitializeTextBox();
             loading_Window.Show();
-            ProcessFolder(path, filePath);
-            loading_Window.Close();
+            loading_Window.Refresh();
+            ProcessDirectory(path, filePath);
+            loading_Window.Dispose();
             rowAT = 0;
             colAT = "A";
             rowCV = 0;
             colCV = "A";
-            int i = 0;
-            for (i = 0; i < summaryCatAT.Count; i++)
+            for (int i = 0; i < summaryCatAT.Count; i++)
             {
                 using (SpreadsheetDocument document = SpreadsheetDocument.Open(filePath, true))
                 {
@@ -109,10 +111,14 @@ namespace PoC
                 }
 
             }
-            MessageBox.Show("Done");
+            MessageBox.Show("Done: " + filePath);
         }
-
-        public void ProcessFolder(string path, string filePath)
+        /// <summary>
+        /// Looks for json files in the directory (checks zips and subfolders)
+        /// </summary>
+        /// <param name="path">path of the directory from which Statistics are going to be made</param>
+        /// <param name="filePath">path of the creating file</param>
+        public void ProcessDirectory(string path, string filePath)
         {
             string[] subfolders = Directory.GetDirectories(path);
             string[] zips = Directory.GetFiles(path, "*.zip");
@@ -120,8 +126,7 @@ namespace PoC
             
             foreach (string json in jsons)
             {
-                MessageBox.Show(json + "json zwykly");
-                CountSattistics(json, filePath);
+                CountSatistics(json, filePath);
             }
             foreach (string zip in zips)
             {
@@ -129,10 +134,15 @@ namespace PoC
             }
             foreach (string subfolder in subfolders)
             {
-                ProcessFolder(subfolder, filePath);
+                ProcessDirectory(subfolder, filePath);
             }
         }
 
+        /// <summary>
+        /// Looks for json files in zip
+        /// </summary>
+        /// <param name="path">path of the directory from which Statistics are going to be made</param>
+        /// <param name="filePath">path of the creating file</param>
         public void ProcessZip(string path, string filePath)
         {
             using (ZipArchive archive = ZipFile.OpenRead(path))
@@ -141,21 +151,16 @@ namespace PoC
                 {
                     if (entry.FullName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
                     {
-                        //MessageBox.Show(entry.ToString() + " zipowany");
                         using (Stream stream = entry.Open())
                         using (StreamReader reader = new StreamReader(stream))
                         {
                             string jsonContent = reader.ReadToEnd();
-                            CountSattisticsFromJson(jsonContent, Path.GetDirectoryName(Path.GetDirectoryName(entry.ToString())), filePath);
+                            CountSatisticsFromJson(jsonContent, Path.GetDirectoryName(Path.GetDirectoryName(entry.ToString())), filePath);
                         }
 
                     }
                 }
             }
-        }
-        private void Statistics_Load(object sender, EventArgs e)
-        {
-
         }
     }
 }

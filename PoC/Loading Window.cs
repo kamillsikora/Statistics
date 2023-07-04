@@ -9,7 +9,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace PoC
-{
+{    /// <summary>
+     /// Form class <c>Loading_Window</c> - window with loading screen
+     /// </summary>
     public partial class Loading_Window : Form
     {
         public string loading_path;
@@ -21,20 +23,15 @@ namespace PoC
         {
             textBox1.Text = loading_path;
         }
-        public void TextLoading()
+
+        private void label1_Click(object sender, EventArgs e)
         {
-            while (true)
-            {
-                if(label1.Text == "Loading")
-                {
-                    label1.Text = "Loading...";
-                }
-                if (label1.Text == "Loading...")
-                {
-                    label1.Text = "Loading";
-                }
-            }
+
         }
 
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

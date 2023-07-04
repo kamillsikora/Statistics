@@ -15,26 +15,20 @@ namespace PoC
 {
     public partial class Statistics : Form
     {
+        /// <summary>
+        /// Starts program
+        /// </summary>
         public Statistics()
         {
             InitializeComponent();
             Reload(main_path);
         }
 
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void label2_Click(object sender, EventArgs e)
-        {
-
-        }
-        
+        /// <summary>
+        /// Opens a directory chosen from checkedListBox
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button4_Click(object sender, EventArgs e)
         {
             if(checkedListBox1.CheckedItems.Count == 1) 
@@ -54,7 +48,11 @@ namespace PoC
                 MessageBox.Show("Error: multiple directories are checked");
             }
         }
-
+        /// <summary>
+        /// Goes back to the previous folder
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button6_Click(object sender, EventArgs e)
         {
             //Goes back to the previous directory
@@ -65,11 +63,11 @@ namespace PoC
             }
         }
 
-        private void checkedListBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
+        /// <summary>
+        /// Creates Statistics from folders checked in a checkedListBox
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button1_Click(object sender, EventArgs e)
         {
             foreach(var item in checkedListBox1.CheckedItems)
@@ -82,23 +80,42 @@ namespace PoC
             }
             foreach(var item in checkedListBox1.CheckedItems)
             {
-                CreateNewTxt(textBox1.Text + Convert.ToString(item));
+                CreateNewStats(textBox1.Text + Convert.ToString(item));
             }
         }
 
+        /// <summary>
+        /// Opens folderBrowserDialog to change disk in checkedListBox
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button5_Click(object sender, EventArgs e)
         {
-            start();
+            if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
+            {
+                main_path = folderBrowserDialog1.SelectedPath;
+                Reload(folderBrowserDialog1.SelectedPath);
+            }
         }
 
+        /// <summary>
+        /// Goes back to path: O:\Projects
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button3_Click(object sender, EventArgs e)
         {
             Reload(main_path);
         }
 
+        /// <summary>
+        /// Opens folder with Statistics
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button2_Click(object sender, EventArgs e)
         {
-            Process.Start(@"O:\Projects\Statistics Excels");
+            Process.Start(@"O:\Projects\Statistics_Excels");
         }
     }
 }
