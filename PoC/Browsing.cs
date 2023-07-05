@@ -28,18 +28,26 @@ namespace PoC
         public void Reload(string root_path)
         {
             history.Push(root_path);
-            string[] dirs = Directory.GetDirectories(root_path);
-            string[] files = Directory.GetFiles(root_path);
-            checkedListBox1.Items.Clear();
-            foreach (string dir in dirs)
+            try
             {
-                checkedListBox1.Items.Add(Path.GetFileName(dir), CheckState.Unchecked);
+                string[] dirs = Directory.GetDirectories(root_path);
+                string[] files = Directory.GetFiles(root_path);
+                checkedListBox1.Items.Clear();
+                foreach (string dir in dirs)
+                {
+                    checkedListBox1.Items.Add(Path.GetFileName(dir), CheckState.Unchecked);
+                }
+                foreach (string file in files)
+                {
+                    checkedListBox1.Items.Add(Path.GetFileName(file), CheckState.Unchecked);
+                }
+                InitializeHeadline(root_path);
             }
-            foreach (string file in files)
+            catch (Exception)
             {
-                checkedListBox1.Items.Add(Path.GetFileName(file), CheckState.Unchecked);
+                MessageBox.Show("You are not connected with VPN");
+                return;
             }
-            InitializeHeadline(root_path);
         }
         /// <summary>
         /// Puts path of the main directory into headline textbox 

@@ -27,14 +27,13 @@ namespace PoC
         /// <summary>
         /// Opens a directory chosen from checkedListBox
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void button4_Click(object sender, EventArgs e)
         {
             if(checkedListBox1.CheckedItems.Count == 1) 
             {
                 if (!checkedListBox1.CheckedItems[0].ToString().Contains('.'))
                 {
+                    main_path = textBox1.Text + checkedListBox1.CheckedItems[0].ToString();
                     Reload(textBox1.Text + checkedListBox1.CheckedItems[0].ToString());
                 }
                 else
@@ -51,14 +50,13 @@ namespace PoC
         /// <summary>
         /// Goes back to the previous folder
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void button6_Click(object sender, EventArgs e)
         {
             //Goes back to the previous directory
             if(history.Count > 1)
             {
                 history.Pop();
+                main_path = history.Peek();
                 Reload(history.Pop().ToString());
             }
         }
@@ -66,8 +64,6 @@ namespace PoC
         /// <summary>
         /// Creates Statistics from folders checked in a checkedListBox
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void button1_Click(object sender, EventArgs e)
         {
             foreach(var item in checkedListBox1.CheckedItems)
@@ -87,8 +83,6 @@ namespace PoC
         /// <summary>
         /// Opens folderBrowserDialog to change disk in checkedListBox
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void button5_Click(object sender, EventArgs e)
         {
             if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
@@ -101,18 +95,15 @@ namespace PoC
         /// <summary>
         /// Goes back to path: O:\Projects
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void button3_Click(object sender, EventArgs e)
         {
+            history.Pop();
             Reload(main_path);
         }
 
         /// <summary>
         /// Opens folder with Statistics
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void button2_Click(object sender, EventArgs e)
         {
             Process.Start(@"O:\Projects\Statistics_Excels");
