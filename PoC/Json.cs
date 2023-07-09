@@ -27,7 +27,7 @@ namespace PoC
         public void CountSatistics(string path, string filePath)
         {
             string data = File.ReadAllText(path);
-
+            path = Path.GetDirectoryName(Path.GetDirectoryName(path));
             CountSatisticsFromJson(data, path, filePath);
         }
 

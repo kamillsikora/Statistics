@@ -7,14 +7,14 @@
     <framework targetVersion="4.7.2" profile="Full" supportedRuntime="4.0.30319" />
   </compatibleFrameworks>
   <dependency>
-    <dependentAssembly dependencyType="install" codebase="PoC.exe.manifest" size="8317">
+    <dependentAssembly dependencyType="install" codebase="PoC.exe.manifest" size="8318">
       <assemblyIdentity name="PoC.exe" version="1.0.0.1" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>DyAsYVhC81rNEhzgDowbQUjbp7ut4M55pD8l/OGnwnI=</dsig:DigestValue>
+        <dsig:DigestValue>0NvrjlPrZFJAqMQyZHNBrtsKj2hwB0abRMibsHP2IcM=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

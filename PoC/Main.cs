@@ -66,7 +66,7 @@ namespace PoC
         /// </summary>
         private void button1_Click(object sender, EventArgs e)
         {
-            foreach(var item in checkedListBox1.CheckedItems)
+            foreach (var item in checkedListBox1.CheckedItems)
             {
                 if (item.ToString().Contains("."))
                 {
@@ -74,7 +74,7 @@ namespace PoC
                     return;
                 }
             }
-            foreach(var item in checkedListBox1.CheckedItems)
+            foreach (var item in checkedListBox1.CheckedItems)
             {
                 CreateNewStats(textBox1.Text + Convert.ToString(item));
             }
@@ -108,5 +108,6 @@ namespace PoC
         {
             Process.Start(@"O:\Projects\Statistics_Excels");
         }
+
     }
 }
